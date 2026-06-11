@@ -1,6 +1,6 @@
-# 💰 Expense Tracker Web Application
+# 💰 Full-Stack Expense Tracker Web Application
 
-A clean, modern, and responsive web application designed to help users log daily expenses, monitor total balances, and manage personal budgets effectively.
+A clean, modern web application designed to help users log daily expenses, monitor total balances, and manage personal budgets effectively. Built with a React frontend and a Python backend.
 
 ![Application Preview](https://placeholder.com)
 
@@ -12,23 +12,27 @@ A clean, modern, and responsive web application designed to help users log daily
 - **Transaction Management:** Add, edit, or delete income and expense items seamlessly.
 - **Smart Categorization:** Organize items under categories like Food, Utilities, Entertainment, and Rent.
 - **History Log:** Search, filter, and track historical logs with timestamp details.
-- **Data Persistence:** Transactions are stored using local storage or database syncing.
-- **Fully Responsive:** Optimized dashboard view for mobile, tablet, and desktop viewports.
+- **Python Backend API:** Secure RESTful API to process calculations and handle data queries.
+- **Data Persistence:** Seamlessly syncs data between the client UI and the backend storage.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+) / [Add framework e.g., React, Vue, Angular]
-- **Styling:** Tailwind CSS / [Add custom CSS, Bootstrap, etc.]
-- **State Management:** [e.g., React Context API, Redux Toolkit, or Native JS State]
-- **Database/Storage:** Browser LocalStorage / [Add backend e.g., Firebase, MongoDB, PostgreSQL]
+- **Frontend:** React, HTML5, CSS3, JavaScript (ES6+)
+- **Backend:** Python (Flask / FastAPI)
+- **Database:** SQLite / PostgreSQL
+- **API Architecture:** RESTful API
 
 ---
 
 ## ⚙️ Installation & Local Setup
 
-Follow these quick steps to get a local copy up and running on your machine.
+Follow these steps to set up both the backend and frontend servers on your local machine.
+
+### Prerequisites
+- Python 3.8+ installed
+- Node.js & npm installed
 
 ### 1. Clone the Repository
 ```bash
@@ -36,28 +40,42 @@ git clone https://github.com
 cd expense-tracker-web
 ```
 
-### 2. Configure Environment Variables (If Applicable)
-If your app connects to a backend API or a service like [Firebase Developer Console](https://google.com) or [MongoDB Atlas](https://mongodb.com), create a `.env` file in your root folder:
-```env
-API_KEY=your_secret_api_key
-DATABASE_URL=your_database_connection_string
-```
-
-### 3. Install Dependencies
-*(Skip this step if you are using pure Vanilla HTML/CSS/JS without npm)*
+### 2. Backend Setup (Python)
+Navigate to the server directory, set up a virtual environment, and install dependencies.
 ```bash
+# Navigate to backend folder
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venvcripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install required packages
+pip install -r requirements.txt
+
+# Run the backend server
+python app.py
+```
+*The API server will typically start running at `http://127.0.0.1:5000`.*
+
+### 3. Frontend Setup (React)
+Open a new terminal window, navigate to the client directory, and launch the development server.
+```bash
+# Navigate to frontend folder
+cd ../frontend
+
+# Install node dependencies
 npm install
-```
 
-### 4. Run the Application
-For React, Vue, or Angular development servers:
-```bash
+# Run the React app
 npm start
-# Or for Vite apps: npm run dev
 ```
-For simple HTML/CSS/JS setups, just launch your local project server using your favorite code editor extension (like **Live Server** in VS Code) or click to open the `index.html` file.
-
-The app will instantly launch on your local host, typical ports include `http://localhost:3000` or `http://localhost:5173`.
+*The user interface will automatically launch at `http://localhost:3000`.*
 
 ---
 
@@ -65,17 +83,19 @@ The app will instantly launch on your local host, typical ports include `http://
 
 ```text
 expense-tracker-web/
-├── public/              # Static public assets (icons, images)
-├── src/                 # Application core code logic
-│   ├── components/      # UI components (Dashboard, Form, History)
-│   ├── context/         # Global state management
-│   ├── styles/          # Global styles & Tailwind configs
-│   ├── utils/           # Helper calculation utilities
-│   ├── App.js           # Main component controller
-│   └── index.js         # Entry point for development
-├── .env.example         # Example configuration settings file
-├── package.json         # Project dependency tree configuration
-└── README.md            # Repository documentation guide
+├── backend/               # Python Backend (API)
+│   ├── app.py             # Server entry point
+│   ├── models.py          # Database models & schemas
+│   ├── requirements.txt   # Python package dependencies
+│   └── instance/          # Local database storage (SQLite)
+├── frontend/              # React Frontend (UI)
+│   ├── public/            # Static public assets (HTML template, icons)
+│   └── src/               # Application core logic
+│       ├── components/    # UI components (Dashboard, Form, History)
+│       ├── App.js         # Main React controller
+│       ├── index.js       # React entry point
+│       └── index.css      # Core HTML component styling & layouts
+└── README.md              # Repository documentation guide
 ```
 
 ---
