@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker (INR ₹)</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for beautiful, responsive standalone analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app-wrapper">
+        <!-- Top Header Bar -->
+        <header id="main-header">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <!-- Elegant Rupee Wallet SVG Icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/>
+                        <path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/>
+                        <path d="M18 12a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h4v-6h-4z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Personal Finance Tracker</h1>
+                    <p class="subtitle">Simple, offline-first cashflow manager & HTML companion</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <span class="badge uppercase">VS Code Native Edition</span>
+                <button id="reset-mock-btn" class="btn btn-secondary flex items-center gap-1" title="Reset default demonstration transactions">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    Reload Demo
+                </button>
+                <button id="clear-all-btn" class="btn btn-danger flex items-center gap-1" title="Wipe all entries">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Clear All
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <main id="main-grid">
+            <!-- Left Grid: Input Controls Form CARD -->
+            <section id="form-section">
+                <div class="card p-6">
+                    <!-- Custom Segmented Tab for Recording Type -->
+                    <div class="type-segment">
+                        <button type="button" id="type-expense-tab" class="segment-tab active" data-type="expense">
+                            <span class="dot red"></span> Expense Row
+                        </button>
+                        <button type="button" id="type-income-tab" class="segment-tab" data-type="income">
+                            <span class="dot green"></span> Income Credit
+                        </button>
+                    </div>
+
+                    <h2 class="section-title margin-top-4" id="form-title">New Expense Entry</h2>
+                    
+                    <form id="transaction-form" class="space-y-4">
+                        <!-- Description input field -->
+                        <div class="form-group">
+                            <label for="input-title">Description / Source *</label>
+                            <input type="text" id="input-title" required placeholder="e.g. Reliance Groceries, Office Salary">
+                        </div>
+
+                        <!-- Amount & Date inputs row -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-amount">Amount (Rupees ₹) *</label>
+                                <div class="amount-input-wrapper">
+                                    <span class="currency-symbol">₹</span>
+                                    <input type="number" id="input-amount" step="0.01" min="0.01" required placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-date">Date *</label>
+                                <input type="date" id="input-date" required>
+                            </div>
+                        </div>
+
+                        <!-- Category Selector -->
+                        <div class="form-group">
+                            <label for="input-category">Category *</label>
+                            <select id="input-category">
+                                <!-- Dynamically loaded from JS -->
+                            </select>
+                        </div>
+
+                        <!-- Additional Notes -->
+                        <div class="form-group">
+                            <label for="input-notes">Additional Notes <span class="muted">(Optional)</span></label>
+                            <textarea id="input-notes" rows="2" placeholder="e.g. Cash payment, vendor name..."></textarea>
+                        </div>
+
+                        <!-- Add Button -->
+                        <button type="submit" id="submit-btn" class="btn btn-primary w-full">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="margin-right-1">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Add Entry
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Info Box underneath -->
+                <div class="info-banner margin-top-4">
+                    <p class="banner-title">🔒 Works fully offline!</p>
+                    <p class="banner-desc">Your budgeting files are stored on your local computer's browser using <code>localStorage</code>. No servers are contacted, ensuring 100% privacy.</p>
+                </div>
+            </section>
+
+            <!-- Right Grid: Analytics & History Logs lists -->
+            <section id="workspace-section">
+                <!-- 4 KPI Summary Cards Row -->
+                <div id="kpi-grid">
+                    <div class="kpi-card" id="kpi-income">
+                        <div class="kpi-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p class="kpi-label">TOTAL INCOME</p>
+                            <p class="kpi-val text-green font-mono" id="val-total-income">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="kpi-expense">
+                        <div class="kpi-icon red">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+                                <polyline points="17 18 23 18 23 12"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p class="kpi-label">TOTAL EXPENSES</p>
+                            <p class="kpi-val text-red font-mono" id="val-total-expenses">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="kpi-savings">
+                        <div class="kpi-icon blue">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p class="kpi-label">NET SAVINGS</p>
+                            <p class="kpi-val text-blue font-mono" id="val-net-savings">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card" id="kpi-ratio">
+                        <div class="kpi-icon purple">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p class="kpi-label">SAVINGS RATE</p>
+                            <p class="kpi-val text-purple font-mono" id="val-savings-rate">0.0%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Charting canvas container -->
+                <div class="card p-5 margin-top-4" id="charts-card">
+                    <h3 class="section-title">📊 Cashflow Trends & Proportions</h3>
+                    <div class="chart-flex-container">
+                        <div class="chart-box">
+                            <canvas id="monthly-trend-chart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="category-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Lists and Records Table logs -->
+                <div class="card p-5 margin-top-4" id="history-card">
+                    <div class="flex justify-between items-center wrap gap-2 margin-bottom-4">
+                        <h3 class="section-title">📁 Receipts Historical logs</h3>
+                        
+                        <!-- Filtering widgets -->
+                        <div class="filters-wrap flex items-center gap-2">
+                            <select id="filter-type">
+                                <option value="all">All Types</option>
+                                <option value="income">Incomes (Inflows)</option>
+                                <option value="expense">Expenses (Outflows)</option>
+                            </select>
+                            
+                            <select id="filter-category">
+                                <option value="all">All Categories</option>
+                            </select>
+
+                            <input type="text" id="search-input" placeholder="Search logs...">
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="table-container">
+                        <table id="logs-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 12%">Date</th>
+                                    <th style="width: 38%">Description</th>
+                                    <th style="width: 15%">Category</th>
+                                    <th style="width: 15%">Type</th>
+                                    <th style="width: 15%; text-align: right;">Amount</th>
+                                    <th style="width: 5%">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table-body">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div id="logs-empty-state" class="empty-state hidden">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <p class="empty-title">No transactions match your filters</p>
+                        <p class="empty-sub">Try adjustments to your search string or classification filters.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer terms -->
+        <footer id="app-footer">
+            <p>© 2026 Personal Rupee Tracker Applet • Pure CSS, HTML and JS Template</p>
+            <p>Compatible with VS Code Direct Runs • Open directly in browser</p>
+        </footer>
+    </div>
+
+    <!-- Main Controller Javascript -->
+    <script src="app.js"></script>
+</body>
+</html>

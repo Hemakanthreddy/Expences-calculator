@@ -1,0 +1,6 @@
+{
+  "name": "Expense Tracker with Python",
+  "description": "An interactive expense tracker featuring monthly spending charts, detailed category analysis, and a powerful Python code companion to export and analyze expenses locally with Pandas and Matplotlib.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
